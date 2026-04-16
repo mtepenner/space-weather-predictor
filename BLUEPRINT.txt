@@ -1,0 +1,58 @@
+space-weather-predictor/
+│
+├── .github/                             # Automated CI/CD pipelines
+│   └── workflows/
+│       ├── test-physics.yml             # Unit tests for the drag and density calculations
+│       └── build-pipeline.yml
+│
+├── ingestion_worker/                    # Go: High-Reliability NOAA/SWPC Data Poller
+│   ├── cmd/
+│   │   └── poller/
+│   │       └── main.go                  # Cron-like worker executing at set intervals
+│   ├── internal/
+│   │   ├── swpc_client/
+│   │   │   ├── x_ray_flux.go            # Polls GOES satellite data for Solar Flares
+│   │   │   └── geomagnetic.go           # Polls Kp-Index data (Geomagnetic Storms)
+│   │   └── publisher/
+│   │       └── db_writer.go             # Writes standardized data to TimescaleDB
+│   ├── go.mod
+│   └── Dockerfile                       # Minimal Go binary container
+│
+├── physics_engine/                      # Python: The Atmospheric Density & Orbit Brain
+│   ├── app/
+│   │   ├── api/
+│   │   │   └── routes/
+│   │   │       └── predict_decay.py     # Endpoint: "Calculate 7-day decay for Satellite X"
+│   │   ├── models/
+│   │   │   ├── nrlmsise00_wrapper.py    # Interfaces with the standard atmospheric density model
+│   │   │   └── drag_calculator.py       # Calculates Fd = 0.5 * rho * v^2 * Cd * A
+│   │   ├── propagation/
+│   │   │   └── sgp4_integrator.py       # Numerically integrates the drag force over time
+│   │   └── main.py                      # FastAPI server
+│   ├── requirements.txt                 # Includes pymsis (for NRLMSISE), sgp4, numpy, scipy
+│   └── Dockerfile
+│
+├── space_dashboard/                     # React + TypeScript: The Space Weather Command Center
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── SolarWindCharts.tsx      # Time-series graphs of F10.7 flux and Kp Index
+│   │   │   ├── EarthAtmosphere3D.tsx    # WebGL visualizer showing the "swelling" atmosphere
+│   │   │   ├── DecayPredictor.tsx       # Graph plotting expected altitude loss over the next 7 days
+│   │   │   └── FleetAlerts.tsx          # Real-time warnings for satellites entering critical drag regimes
+│   │   ├── hooks/
+│   │   │   └── useSpaceWeather.ts       # Polls the backend for live SWPC updates
+│   │   ├── App.tsx
+│   │   └── index.tsx
+│   ├── package.json                     # Needs three.js, recharts
+│   └── Dockerfile
+│
+├── infrastructure/                      # Deployment Orchestration
+│   ├── timescaledb.yaml                 # Time-series database for historical space weather and density logs
+│   ├── ingestion-worker.yaml
+│   ├── physics-api.yaml
+│   └── dashboard-ingress.yaml
+│
+├── docker-compose.yml                   # Boots the Go poller, Python engine, and UI locally
+├── Makefile                             # Build scripts and database migrations
+└── README.md
+
