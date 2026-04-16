@@ -41,7 +41,7 @@ The platform is built on a microservice architecture for high availability and p
 ### Setup Steps
 1. Clone the repository:
    ```bash
-   git clone [https://github.com/yourusername/space-weather-predictor.git](https://github.com/yourusername/space-weather-predictor.git)
+   git clone https://github.com/mtepenner/space-weather-predictor.git
    cd space-weather-predictor
    ```
 2. Run any necessary database migrations using the provided Makefile:
