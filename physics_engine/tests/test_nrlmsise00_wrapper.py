@@ -79,7 +79,7 @@ class TestGetDensityWithPymsis:
 
         with patch.object(wrapper_module, "_PYMSIS_AVAILABLE", True):
             with patch.dict("sys.modules", {"pymsis": mock_pymsis}):
-                with patch.object(wrapper_module, "pymsis", mock_pymsis):
+                with patch.object(wrapper_module, "pymsis", mock_pymsis, create=True):
                     rho = get_density(400.0, 45.0, 30.0, 2024, 100, 43200.0, 150.0, 150.0, 7.0)
                     assert rho == pytest.approx(expected_density, rel=1e-9)
 
@@ -87,7 +87,7 @@ class TestGetDensityWithPymsis:
         mock_pymsis = self._make_pymsis_mock(3.5e-10)
 
         with patch.object(wrapper_module, "_PYMSIS_AVAILABLE", True):
-            with patch.object(wrapper_module, "pymsis", mock_pymsis):
+            with patch.object(wrapper_module, "pymsis", mock_pymsis, create=True):
                 get_density(400.0, 45.0, 30.0, 2024, 100, 43200.0, 150.0, 155.0, 10.0)
                 mock_pymsis.calculate.assert_called_once()
                 call_kwargs = mock_pymsis.calculate.call_args
@@ -101,7 +101,7 @@ class TestGetDensityWithPymsis:
         mock_pymsis = self._make_pymsis_mock(float("nan"))
 
         with patch.object(wrapper_module, "_PYMSIS_AVAILABLE", True):
-            with patch.object(wrapper_module, "pymsis", mock_pymsis):
+            with patch.object(wrapper_module, "pymsis", mock_pymsis, create=True):
                 rho = get_density(400.0, 0.0, 0.0, 2024, 100, 0.0, 150.0, 150.0, 7.0)
                 expected = _simple_exponential_density(400.0)
                 assert rho == pytest.approx(expected, rel=1e-9)
@@ -110,7 +110,7 @@ class TestGetDensityWithPymsis:
         mock_pymsis = self._make_pymsis_mock(-1.0)
 
         with patch.object(wrapper_module, "_PYMSIS_AVAILABLE", True):
-            with patch.object(wrapper_module, "pymsis", mock_pymsis):
+            with patch.object(wrapper_module, "pymsis", mock_pymsis, create=True):
                 rho = get_density(400.0, 0.0, 0.0, 2024, 100, 0.0, 150.0, 150.0, 7.0)
                 expected = _simple_exponential_density(400.0)
                 assert rho == pytest.approx(expected, rel=1e-9)
@@ -119,6 +119,6 @@ class TestGetDensityWithPymsis:
         mock_pymsis = self._make_pymsis_mock(2.8e-10)
 
         with patch.object(wrapper_module, "_PYMSIS_AVAILABLE", True):
-            with patch.object(wrapper_module, "pymsis", mock_pymsis):
+            with patch.object(wrapper_module, "pymsis", mock_pymsis, create=True):
                 rho = get_density(400.0, 0.0, 0.0, 2024, 100, 0.0, 150.0, 150.0, 7.0)
                 assert rho > 0
